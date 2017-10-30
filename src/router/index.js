@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import localforage from 'localforage'
 
+import { bus } from '@/plugins/event-bus'
+
 import dash from '@app/dash/routes'
 import categories from '@app/categories/routes'
 import auth from '@app/auth/routes'
@@ -21,13 +23,21 @@ const router = new Router({
   routes
 })
 
-router.beforeEach(async (to, from, next) => {
+const checkAuth = async (to, from, next) => {
   const token = await localforage.getItem('token')
 
   if (to.name !== 'auth.index' && token === null) {
     next({ name: 'auth.index' })
-    return
   }
+}
+
+const clearAlert = () => {
+  bus.$emit('clear-alerts')
+}
+
+router.beforeEach(async (to, from, next) => {
+  clearAlert()
+  checkAuth(to, from, next)
   next()
 })
 

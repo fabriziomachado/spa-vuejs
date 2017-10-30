@@ -1,9 +1,10 @@
 
 import axios from 'axios'
 import localforage from 'localforage'
+import { bus } from '@/plugins/event-bus'
 
 const http = axios.create({
-  baseURL: 'https://restify-fcm.c9users.io'
+  baseURL: process.env.API_URL
 })
 
 // REQUESTS HANDLES
@@ -18,8 +19,19 @@ const intercepRequestError = (error) => {
 
 // RESPONSES HANDLERS
 const intercepResponse = (response) => response
+
 const intercepResponseError = (error) => {
-  alert(error.message)
+  let message = error.message
+
+  if (error.response != null) {
+    message = error.response.data.error
+  }
+
+  bus.$emit('display-alert', {
+    type: 'error',
+    message
+  })
+  Promise.reject(error)
 }
 
 http.interceptors.request.use(intercepRequest, intercepRequestError)

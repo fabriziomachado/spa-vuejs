@@ -1,11 +1,12 @@
 
 <script>
   import TheNavigation from './the-navigation'
-  // import TheAlerts from '@/components/alerts'
+  import TheAlerts from '@/components/alerts'
+  
   export default {
     components: {
-      TheNavigation
-      // TheAlerts
+      TheNavigation,
+      TheAlerts
     }
   }
 </script>
@@ -15,6 +16,7 @@
  <div id="app">
     <the-navigation></the-navigation>
     <div class="container">
+      <the-alerts></the-alerts>
       <router-view/>
     </div>
   </div>
