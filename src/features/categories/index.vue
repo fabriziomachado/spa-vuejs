@@ -17,12 +17,34 @@ export default {
     }
   },
   methods: {
+    askRemove (category) {
+      const message = `Tem certeza que deseja remover ${category.name}?`
+      const confirm = window.confirm(message)
+
+      if (confirm) {
+        this.doRemove(category.id)
+      }
+    },
+    async doRemove (id) {
+      const response = await http.delete(`/categoria/${id}`)
+      const { message } = response.data
+      const index = findIndex(this.list, { id })
+
+      if (index > -1) {
+        this.list.splice(index, 1)
+      }
+
+      this.$bus.$emit('display-alert', {
+        type: 'success',
+        message
+      })
+    },
     navigation (route) {
       this.$router.push({ name: route })
     },
     updateList (obj) {
       const { category } = obj
-      const index = findIndex(this.list, category)
+      const index = findIndex(this.list, { id: category.id })
 
       // se tiver erro da api mostra se não pega a default do axios
       if (index > -1) {
@@ -34,6 +56,9 @@ export default {
     }
   },
   computed: {
+    hasCategories () {
+      return this.list.length > 0
+    },
     shouldDisplayNew () {
       return this.$route.name === 'categories.index'
     },
@@ -67,8 +92,12 @@ export default {
     <transition name="slide-fade">
       <router-view @update-category-list="updateList"></router-view>
     </transition>
+    
+    <div class="no-categories" v-show="!hasCategories">
+      <h4>Não há ainda categorias salvas</h4>
+    </div>
 
-    <div class="row">
+    <div class="row" v-show="hasCategories">
       <div class="col-sm-6 col-md-4"
         v-for="category in list"
         :key="category.id">
@@ -77,7 +106,7 @@ export default {
             <h3>{{ category.name }}</h3>
             <p class="text-right">
               <router-link class="btn btn-default btn-xs" :to="{ name: 'categories.form', params: { id: category.id } }">editar</router-link>
-              <a href="#" class="btn btn-default btn-xs" role="button">excluir</a></p>
+              <a href="#" @click.prevent="askRemove(category)" class="btn btn-default btn-xs" role="button">excluir</a></p>
           </div>
         </div>
       </div>

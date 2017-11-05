@@ -1,9 +1,19 @@
 
 <script>
-  import axios from 'axios'
   import localforage from 'localforage'
+  import http from '@/service/http'
   export default {
     name: 'Authentication',
+    mounted () {
+      console.log(this.$route)
+      // this.$route.query.test
+      if (window.location.search.indexOf('expired=true') > -1) {
+        this.$bus.$emit('display-alert', {
+          type: 'error',
+          message: 'Token expirado. Favor logar novamente!'
+        })
+      }
+    },
     data () {
       return {
         email: 'fabrizio@unesc.net',
@@ -17,7 +27,7 @@
           const { email, password } = this
 
           // await
-          const response = await axios.post(
+          const response = await http.post(
             'https://restify-fcm.c9users.io/autenticacao',
             { email, password }
           )

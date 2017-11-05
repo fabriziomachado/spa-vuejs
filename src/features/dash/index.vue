@@ -12,7 +12,7 @@ export default {
 
 <template>
   <div>
-   <h1>Componente Dash</h1>
+   <h2>Dash</h2>
   </div>
 </template>
 

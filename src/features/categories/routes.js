@@ -1,6 +1,9 @@
 
-import index from './'
-import form from './form'
+// import index from './'
+// import form from './form'
+// Lazy Loading Routes
+const index = () => import('./')
+const form = () => import('./form')
 
 export default [
   {

@@ -12,7 +12,7 @@ export default {
 
 <template>
   <div>
-   <h1>Componente Users</h1>
+   <h2>Users</h2>
   </div>
 </template>
 
